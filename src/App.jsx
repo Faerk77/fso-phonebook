@@ -3,12 +3,20 @@ import "./App.css";
 
 function App() {
   const [persons, setPersons] = useState([
-    { name: "Arto Hellas", id: "Arto Hellas" },
+    { id: "Arto Hellas", name: "Arto Hellas", number: "040-123456" },
   ]);
   const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+
+  console.log(persons);
 
   const agenda = persons.map((elem) => {
-    return <p key={elem.id}>{elem.name}</p>;
+    return (
+      <div key={elem.id}>
+        <p>{elem.name}</p>
+        <p>{elem.number}</p>
+      </div>
+    );
   });
 
   return (
@@ -23,9 +31,25 @@ function App() {
           />
         </div>
         <div>
+          number:
+          <input
+            type="number"
+            value={newNumber}
+            onChange={(ev) => handleNewNumber(ev, setNewNumber)}
+          />
+        </div>
+        <div>
           <button
             onClick={(ev) =>
-              handleAddNote(ev, newName, setPersons, setNewName, persons)
+              handleAddNote(
+                ev,
+                newName,
+                setPersons,
+                setNewName,
+                persons,
+                setNewNumber,
+                newNumber
+              )
             }
           >
             add
@@ -44,16 +68,38 @@ const handleNewName = (ev, setter) => {
   setter(ev.target.value);
 };
 
-const handleAddNote = (ev, name, setPersons, setNewName, persons) => {
+const handleAddNote = (
+  ev,
+  name,
+  setPersons,
+  setNewName,
+  persons,
+  setNewNumber,
+  number
+) => {
   ev.preventDefault();
   const personsFiltered = persons.filter((elem) => elem.name === name);
-  if (personsFiltered.length > 0) {
-    return alert(`${name} is already added to phonebook`), setNewName("");
-  }
+
+  if (name === "") return alert("Please enter a valid name");
+  else if (personsFiltered.length > 0) {
+    return (
+      alert(`${name} is already added to phonebook`),
+      setNewName(""),
+      setNewNumber("")
+    );
+  } else if (number.length < 8) return alert("Please provide a valid number");
+
   const newPerson = {
-    name: name,
     id: name,
+    name: name,
+    number: number,
   };
+
   setPersons(persons.concat(newPerson));
   setNewName("");
+  setNewNumber("");
+};
+
+const handleNewNumber = (ev, setter) => {
+  setter(ev.target.value.toString());
 };
