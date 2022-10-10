@@ -2,9 +2,10 @@ import { useState } from "react";
 import "./App.css";
 
 function App() {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas", id: 0 }]);
+  const [persons, setPersons] = useState([
+    { name: "Arto Hellas", id: "Arto Hellas" },
+  ]);
   const [newName, setNewName] = useState("");
-  console.log(persons);
 
   const agenda = persons.map((elem) => {
     return <p key={elem.id}>{elem.name}</p>;
@@ -45,9 +46,13 @@ const handleNewName = (ev, setter) => {
 
 const handleAddNote = (ev, name, setPersons, setNewName, persons) => {
   ev.preventDefault();
+  const personsFiltered = persons.filter((elem) => elem.name === name);
+  if (personsFiltered.length > 0) {
+    return alert(`${name} is already added to phonebook`), setNewName("");
+  }
   const newPerson = {
     name: name,
-    id: persons.length + 1,
+    id: name,
   };
   setPersons(persons.concat(newPerson));
   setNewName("");
