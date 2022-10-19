@@ -1,7 +1,7 @@
-const PersonFilter = ({ text, filter, setter }) => {
+const PersonFilter = ({ filter, setter }) => {
   return (
     <label>
-      {text}
+      Find a person:
       <input
         type="text"
         value={filter}
