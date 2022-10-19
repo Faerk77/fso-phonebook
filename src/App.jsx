@@ -1,105 +1,33 @@
 import { useState } from "react";
 import "./App.css";
+import PersonFilter from "./components/PersonFilter";
+import Form from "./components/Form";
+import PhoneBook from "./components/PhoneBook";
 
 function App() {
   const [persons, setPersons] = useState([
-    { id: "Arto Hellas", name: "Arto Hellas", number: "040-123456" },
+    { name: "Arto Hellas", number: "040-123456", id: 1 },
+    { name: "Ada Lovelace", number: "39-44-5323523", id: 2 },
+    { name: "Dan Abramov", number: "12-43-234345", id: 3 },
+    { name: "Mary Poppendieck", number: "39-23-6423122", id: 4 },
   ]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
 
-  console.log(persons);
+  const [filter, setFilter] = useState("");
 
-  const agenda = persons.map((elem) => {
-    return (
-      <div key={elem.id}>
-        <p>{elem.name}</p>
-        <p>{elem.number}</p>
-      </div>
-    );
+  const agenda = persons.filter((elem) => {
+    return elem.name.toLowerCase().includes(filter.toLowerCase());
   });
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <form>
-        <div>
-          name:
-          <input
-            value={newName}
-            onChange={(ev) => handleNewName(ev, setNewName)}
-          />
-        </div>
-        <div>
-          number:
-          <input
-            type="number"
-            value={newNumber}
-            onChange={(ev) => handleNewNumber(ev, setNewNumber)}
-          />
-        </div>
-        <div>
-          <button
-            onClick={(ev) =>
-              handleAddNote(
-                ev,
-                newName,
-                setPersons,
-                setNewName,
-                persons,
-                setNewNumber,
-                newNumber
-              )
-            }
-          >
-            add
-          </button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      {agenda}
+      <PersonFilter text={"Find a person"} filter={filter} setter={setFilter} />
+      <h3>Add new one..</h3>
+      <Form objList={persons} setter={setPersons} />
+      <h3>Numbers</h3>
+      <PhoneBook agenda={agenda} />
     </div>
   );
 }
 
 export default App;
-
-const handleNewName = (ev, setter) => {
-  setter(ev.target.value);
-};
-
-const handleAddNote = (
-  ev,
-  name,
-  setPersons,
-  setNewName,
-  persons,
-  setNewNumber,
-  number
-) => {
-  ev.preventDefault();
-  const personsFiltered = persons.filter((elem) => elem.name === name);
-
-  if (name === "") return alert("Please enter a valid name");
-  else if (personsFiltered.length > 0) {
-    return (
-      alert(`${name} is already added to phonebook`),
-      setNewName(""),
-      setNewNumber("")
-    );
-  } else if (number.length < 8) return alert("Please provide a valid number");
-
-  const newPerson = {
-    id: name,
-    name: name,
-    number: number,
-  };
-
-  setPersons(persons.concat(newPerson));
-  setNewName("");
-  setNewNumber("");
-};
-
-const handleNewNumber = (ev, setter) => {
-  setter(ev.target.value.toString());
-};
