@@ -1,8 +1,22 @@
 const Form = ({ objList, setter }) => {
-  const addPerson = (person) => setter([...objList].concat(person));
+  const addPerson = async (person) => {
+    try {
+      const URL = "http://127.0.0.1:3001/persons";
+      let response = await fetch(URL, {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(person),
+      });
+      let data = await response.json();
+      setter([...objList].concat(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const newPerson = (ev) => {
     ev.preventDefault();
+
     let nameValue = ev.target.name.value;
     let numberValue = ev.target.number.value;
 
@@ -15,9 +29,9 @@ const Form = ({ objList, setter }) => {
     const newPerson = {
       name: nameValue,
       number: numberValue,
-      id: crypto.randomUUID(),
     };
 
+    console.log(newPerson);
     addPerson(newPerson);
     ev.target.name.value = "";
     ev.target.number.value = "";
