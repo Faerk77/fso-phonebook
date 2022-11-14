@@ -3,6 +3,7 @@ import "./App.css";
 import PersonFilter from "./components/PersonFilter";
 import Form from "./components/Form";
 import PhoneBook from "./components/PhoneBook";
+import { getData, addPerson } from "./services/persons";
 
 function App() {
   const [persons, setPersons] = useState([]);
@@ -13,12 +14,7 @@ function App() {
   });
 
   useEffect(() => {
-    const getData = async () => {
-      let response = await fetch("http://localhost:3001/persons");
-      let data = await response.json();
-      setPersons(data);
-    };
-    getData();
+    getData(setPersons);
   }, []);
 
   return (
@@ -26,7 +22,7 @@ function App() {
       <h2>Phonebook</h2>
       <PersonFilter filter={filter} setter={setFilter} />
       <h3>Add new one..</h3>
-      <Form objList={persons} setter={setPersons} />
+      <Form addPerson={addPerson} setter={setPersons} objList={persons} />
       <h3>Numbers</h3>
       <PhoneBook agenda={agenda} />
     </div>

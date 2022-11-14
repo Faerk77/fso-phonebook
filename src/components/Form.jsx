@@ -1,19 +1,4 @@
-const Form = ({ objList, setter }) => {
-  const addPerson = async (person) => {
-    try {
-      const URL = "http://127.0.0.1:3001/persons";
-      let response = await fetch(URL, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(person),
-      });
-      let data = await response.json();
-      setter([...objList].concat(data));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
+const Form = ({ addPerson, setter, objList }) => {
   const newPerson = (ev) => {
     ev.preventDefault();
 
@@ -30,9 +15,7 @@ const Form = ({ objList, setter }) => {
       name: nameValue,
       number: numberValue,
     };
-
-    console.log(newPerson);
-    addPerson(newPerson);
+    addPerson(newPerson, setter, objList);
     ev.target.name.value = "";
     ev.target.number.value = "";
   };
