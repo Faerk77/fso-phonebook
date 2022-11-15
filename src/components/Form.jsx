@@ -17,20 +17,18 @@ const Form = ({ setter, persons }) => {
     console.log(duplicateName);
 
     if (duplicateName.length) {
-      const updateData = async () => {
-        if (
-          window.confirm(
-            `${nameValue} is already added to phonebook. Replace the old number with the new one?`
-          )
-        ) {
-          const getPersonId = persons.find(({ name }) => name === nameValue);
-          const { error } = await updatePersonData(getPersonId.id, {
-            number: numberValue,
-          });
-          if (error) return alert("Server error");
-        }
-      };
-      updateData();
+      if (
+        window.confirm(
+          `${nameValue} is already added to phonebook. Replace the old number with the new one?`
+        )
+      ) {
+        const getPersonId = persons.find(({ name }) => name === nameValue);
+        const { error } = await updatePersonData(getPersonId.id, {
+          number: numberValue,
+        });
+        if (error) return alert("Server error");
+      }
+
       ev.target.name.value = "";
       ev.target.number.value = "";
       return getData(setter);
