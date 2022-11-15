@@ -25,7 +25,7 @@ const addPerson = async (newPerson) => {
   };
 
   const deleteFromServer = async (id) => {
-    const completeURL = `${import.meta.env.VITE_API_URL}/${id}`;
+    const completeURL = `${API_URL}/${id}`;
     try {
       const response = await fetch(completeURL, {
         method: 'DELETE',
@@ -37,7 +37,25 @@ const addPerson = async (newPerson) => {
       return { error: err.message };
     }
   };
+
+
+  const updatePersonData = async(id, person)=>{
+      try{
+        const response = await (fetch(`${API_URL}${id}`, { 
+          method: "PATCH",
+          body: JSON.stringify(person),
+          headers: {
+            'Content-type':'application/json'
+          }
+        }))
+        if(!response.ok) throw new Error('Server Error')
+        const data = await response.json()
+        return {data, error:null}
+      }catch(err){
+        return {error: err.message}
+      }
+  }
   
 
 
-export {getData, addPerson, deleteFromServer}
+export {getData, addPerson, deleteFromServer, updatePersonData}

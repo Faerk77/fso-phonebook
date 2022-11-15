@@ -1,4 +1,6 @@
 import { addPerson } from "../services/persons";
+import { updatePersonData } from "../services/persons";
+import { getData } from "../services/persons";
 
 const Form = ({ setter, persons }) => {
   const newPerson = async (ev) => {
@@ -9,6 +11,29 @@ const Form = ({ setter, persons }) => {
 
     if (!nameValue.length || !numberValue.length) {
       return alert("Please enter a valid data.");
+    }
+
+    const duplicateName = persons.filter(({ name }) => name === nameValue);
+    console.log(duplicateName);
+
+    if (duplicateName.length) {
+      const updateData = async () => {
+        if (
+          window.confirm(
+            `${nameValue} is already added to phonebook. Replace the old number with the new one?`
+          )
+        ) {
+          const getPersonId = persons.find(({ name }) => name === nameValue);
+          const { error } = await updatePersonData(getPersonId.id, {
+            number: numberValue,
+          });
+          if (error) return alert("Server error");
+        }
+      };
+      updateData();
+      ev.target.name.value = "";
+      ev.target.number.value = "";
+      return getData(setter);
     }
 
     const newPerson = {
