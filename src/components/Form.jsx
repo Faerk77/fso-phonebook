@@ -1,27 +1,31 @@
-const Form = ({ addPerson, setter, objList }) => {
-  const newPerson = (ev) => {
+import { addPerson } from "../services/persons";
+
+const Form = ({ setter, persons }) => {
+  const newPerson = async (ev) => {
     ev.preventDefault();
 
     let nameValue = ev.target.name.value;
     let numberValue = ev.target.number.value;
 
-    if (nameValue.length === 0) {
-      return alert("Please enter a valid name.");
-    } else if (numberValue.length < 6) {
-      return alert("Please enter a valid number.");
+    if (!nameValue.length || !numberValue.length) {
+      return alert("Please enter a valid data.");
     }
 
     const newPerson = {
       name: nameValue,
       number: numberValue,
     };
-    addPerson(newPerson, setter, objList);
+
+    const { error, data } = await addPerson(newPerson);
+    if (error) return alert("Server error");
+    setter([...persons].concat(data));
     ev.target.name.value = "";
     ev.target.number.value = "";
   };
 
   return (
     <form onSubmit={(ev) => newPerson(ev)}>
+      <h2>Add new person:</h2>
       <label>
         Name:
         <input type="text" name="name" />

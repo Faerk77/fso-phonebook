@@ -1,23 +1,43 @@
-const URL = "http://127.0.0.1:3001/persons";
+import { fetchingData } from "../functions/fetchingData";
 
-const getData = async (setter) => {
-    let response = await fetch(URL);
-    let data = await response.json();
-    setter(data);
-  };
+const API_URL = import.meta.env.VITE_API_URL
 
-const addPerson = async (newPerson, setter, objList) => {
+const getData = async(setter, signal)=>{
+  const { error, data } = await fetchingData(signal);
+  if (error === 'abort') return;
+  setter(data);
+}
+
+
+const addPerson = async (newPerson) => {
     try {
-      let response = await fetch(URL, {
+      let response = await fetch(API_URL, {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify(newPerson),
       });
+      if (!response.ok) throw new Error('server no responde')
       let data = await response.json();
-      setter([...objList].concat(data))
+      return {data, error: null}
     } catch (err) {
-      console.log(err);
+      return {error: err.message}
     }
   };
 
-export {getData, addPerson}
+  const deleteFromServer = async (id) => {
+    const completeURL = `${import.meta.env.VITE_API_URL}/${id}`;
+    try {
+      const response = await fetch(completeURL, {
+        method: 'DELETE',
+      });
+      if (!response.ok) throw new Error('server no responde');
+      const data = await response.json();
+      return { data, error: null };
+    } catch (err) {
+      return { error: err.message };
+    }
+  };
+  
+
+
+export {getData, addPerson, deleteFromServer}

@@ -3,28 +3,28 @@ import "./App.css";
 import PersonFilter from "./components/PersonFilter";
 import Form from "./components/Form";
 import PhoneBook from "./components/PhoneBook";
-import { getData, addPerson } from "./services/persons";
+import { getData } from "./services/persons";
 
 function App() {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
 
+  useEffect(() => {
+    const controller = new AbortController();
+    getData(setPersons, controller.signal);
+    return () => controller.abort();
+  }, []);
+
   const agenda = persons.filter((elem) => {
     return elem.name.toLowerCase().includes(filter.toLowerCase());
   });
 
-  useEffect(() => {
-    getData(setPersons);
-  }, []);
-
   return (
     <div>
-      <h2>Phonebook</h2>
+      <h1>Phonebook</h1>
       <PersonFilter filter={filter} setter={setFilter} />
-      <h3>Add new one..</h3>
-      <Form addPerson={addPerson} setter={setPersons} objList={persons} />
-      <h3>Numbers</h3>
-      <PhoneBook agenda={agenda} />
+      <Form setter={setPersons} persons={persons} />
+      <PhoneBook agenda={agenda} setter={setPersons} persons={persons} />
     </div>
   );
 }
